@@ -6,7 +6,7 @@ A Blueprint class to be used with [Flask-SocketIO](http://flask-socketio.readthe
 ### Install
 ```pip install git+http://github.com/m-housh/io-blueprint.git```  
 
-### Example
+### Simple Example
 ```
 git clone http://github.com/m-housh/io-blueprint.git
 cd io-blueprint/example
@@ -102,5 +102,65 @@ templates/index.html
             <script src="/static/my.js" type="text/javascript"></script>
         </div>
     </body>
-</html
+</html>
 ```
+### Advanced Example
+----
+
+A more likely example as the above can easily be used without a blueprint type of pattern.  Such as in Miguel Grinberg's [Flask-SocketIO-Chat](https://github.com/miguelgrinberg/Flask-SocketIO-Chat).  
+
+My use case is I have multiple sockets that provide similar functionality.  I have a single page app that all the content is loaded through a socket.  To keep things DRY I sub-class IOBlueprint with several methods that provide a form view, a table view and a way to process a form on submission.  It should also be noted that I use the [dominate](https://github.com/Knio/dominate) lib to create my views dynamically through code, and do not need to render html other than my initial view and/or login view (which is pre-socketio connection).
+
+base.py
+```python
+from io_blueprint import IOBlueprint
+from flask_socketio import emit
+
+class Base(IOBlueprint):
+
+    def __init__(self, namespace=None, **kwargs):
+        self._form_view = kwargs.pop('form_view', None) # should return an html safe string to be loaded into the page
+        self._table_view = kwargs.pop('table_view', None) # should return an html safe to be loaded into the page
+        self.form = kwargs.pop('form', None) # should be a flask_wtf.Form class
+        super().__init__(namespace, **kwargs)
+        
+        # events to be registered.
+        @self.on('table')
+        def table():
+            emit('load content', str(self._table_view()), namespace='/')
+    
+        @self.on('form')
+        def form():
+            emit('load content', str(self._form_view(form=self.form())), namespace='/') # load a fresh form
+            
+        @self.on('post')
+        def post(data):
+            formdata = data.get('form')
+            form = self.form(**formdata)
+            if form.validate():
+                # do something
+                model = myDatabaseModel()
+                form.populate_obj(model)
+                # save model to database
+                model.save()
+                emit('flash', 'Model saved', namespace='/')
+                # show the table view with new model
+                emit('load content', str(self._table_view()), namespace='/')
+                return # exit this method
+            emit('flash', 'Please fix form errors', namespace='/')
+            emit('load content', str(self._form_view(form=form)), namespace='/') # load the form with errors
+            
+    def _prepare_for_io(self):
+        if self._table_view is None:
+            raise ValueError('table_view not set on instance.')
+        if self._form_view is None:
+            raise ValueError('form_view not set on instance.')
+        if self.form is None:
+            raise ValueError('form not set on instance.')
+        return True
+        
+    def init_io(self, io):
+        self._prepare_for_io()
+        return super().init_io(io)
+```            
+   
