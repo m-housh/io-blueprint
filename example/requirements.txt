@@ -1,7 +1,6 @@
-git+https://github.com/m-housh/io-blueprint.git
+git+http://github.com/m-housh/io-blueprint.git
 Flask==0.10.1
 Flask-SocketIO==2.2
-IOBlueprint==0.1.0
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
