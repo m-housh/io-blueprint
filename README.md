@@ -4,12 +4,13 @@
 A Blueprint class to be used with Flask-SocketIO.
 
 ### Install
-```pip install git+https://github.com/m-housh/io-blueprint.git```  
+```pip install git+http://github.com/m-housh/io-blueprint.git```  
 
 ### Example
 ```
-git clone https://github.com/m-housh/io-blueprint.git
+git clone http://github.com/m-housh/io-blueprint.git
 cd io-blueprint/example
+mkvirtualenv --python=$(which python3) io-blueprint
 pip install -r requirements.txt
 python app.py
 ```
