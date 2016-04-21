@@ -1,7 +1,7 @@
 # Flask-SocketIO Blueprint
 ----
 
-A Blueprint class to be used with Flask-SocketIO.
+A Blueprint class to be used with [Flask-SocketIO](http://flask-socketio.readthedocs.org/en/latest/)
 
 ### Install
 ```pip install git+http://github.com/m-housh/io-blueprint.git```  
