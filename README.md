@@ -96,7 +96,7 @@ templates/index.html
         <div id="flashes">
             <h3>Flash Messages</h3>
         </div>
-        <div id="scripts>
+        <div id="scripts">
             <script src="//ajax.googlapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
             <script src="//cdn.socket.io/socket.io-1.4.5.js" type="text/javascript"></script>
             <script src="/static/my.js" type="text/javascript"></script>
