@@ -5,7 +5,7 @@ test_blueprint = IOBlueprint('/test')
 
 @test_blueprint.on('say')
 def say():
-    emit('flash', "I'm saying something", namespace='/')
+    emit('flash', "Server says...", namespace='/')
 
 @test_blueprint.on('echo')
 def echo(msg):
